@@ -66,6 +66,7 @@ def main():
 
         # View CSV
         if st.sidebar.button("View CSV"):
+            st.subheader("CSV Data")
             st.write(news_df)
     else:
         st.write("Please select at least one news source.")
