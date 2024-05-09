@@ -1,10 +1,6 @@
-import os
-import tempfile
 import streamlit as st
 import feedparser
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans
 
 # Fetch and parse the RSS feed for selected news source
 def fetch_news(source_url):
@@ -68,14 +64,9 @@ def main():
             st.write(f"{row['summary']}")
             st.markdown(f"[Read more]({row['link']})")
 
-        # Store data in CSV
-        csv_filename = "news_data.csv"
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            csv_path = temp_file.name
-            news_df.to_csv(csv_path, index=False)
-
-        if st.sidebar.button("Save data"):
-            st.sidebar.markdown(f"Download the CSV file [here]({csv_path})")
+        # View CSV
+        if st.sidebar.button("View CSV"):
+            st.write(news_df)
     else:
         st.write("Please select at least one news source.")
 
