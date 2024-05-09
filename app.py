@@ -39,13 +39,13 @@ def perform_clustering(data):
     X = vectorizer.fit_transform(data['summary'])
 
     # Create a custom TF-IDF matrix with category-based weights
-    category_weights = np.zeros(X.shape[1])
-    for category, keywords in category_keywords.items():
+    category_weights = np.zeros((len(category_keywords), X.shape[1]))
+    for i, keywords in enumerate(category_keywords.values()):
         category_indices = [vectorizer.vocabulary_.get(keyword, -1) for keyword in keywords]
         category_indices = [idx for idx in category_indices if idx != -1]
-        category_weights[category_indices] = 1
+        category_weights[i, category_indices] = 1
 
-    X_weighted = X.multiply(category_weights)
+    X_weighted = X.multiply(category_weights.T)
 
     # Perform clustering
     kmeans = KMeans(n_clusters=len(category_keywords), random_state=42)
@@ -55,10 +55,8 @@ def perform_clustering(data):
 
 # Map category choice to cluster containing relevant information
 def map_category_to_cluster(category_choice, category_keywords, clusters, vectorizer):
-    category_vector = vectorizer.transform([category_keywords[category_choice]])
-    similarity_scores = cosine_similarity(clusters, category_vector)
-    most_similar_cluster_idx = np.argmax(similarity_scores)
-    return most_similar_cluster_idx
+    category_idx = list(category_keywords.keys()).index(category_choice)
+    return category_idx
 
 # Streamlit App
 def main():
@@ -82,16 +80,10 @@ def main():
         # Perform clustering
         clustered_data = perform_clustering(news_df)
 
-        # Calculate TF-IDF matrix for categories
-        vectorizer = TfidfVectorizer(stop_words='english', lowercase=True)
-        category_texts = list(category_keywords.values())
-        category_vectors = vectorizer.fit_transform([' '.join(words) for words in category_texts])
-
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", list(category_keywords.keys()))
 
-        most_similar_cluster_idx = map_category_to_cluster(category_choice, category_keywords, category_vectors, vectorizer)
-        filtered_data = clustered_data[clustered_data['cluster'] == most_similar_cluster_idx]
+        filtered_data = clustered_data[clustered_data['cluster'] == map_category_to_cluster(category_choice, category_keywords, None, None)]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
