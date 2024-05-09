@@ -5,12 +5,12 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 
-# Define category keywords
+# Define category keywords with variations
 category_keywords = {
-    'Business': ['business', 'economy', 'finance', 'market', 'trade', 'stocks'],
-    'Politics': ['politics', 'government', 'election', 'policy', 'congress', 'president'],
-    'Arts/Culture/Celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film'],
-    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics']
+    'Business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
+    'Politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
+    'Arts/Culture/Celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
+    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
 }
 
 # Fetch and parse the RSS feed for selected news source
@@ -34,13 +34,14 @@ def load_data(sources):
 # Perform clustering
 def perform_clustering(data):
     # Calculate TF-IDF matrix
-    vectorizer = TfidfVectorizer(stop_words='english')
+    vectorizer = TfidfVectorizer(stop_words='english', lowercase=True)
     X = vectorizer.fit_transform(data['summary'])
 
     # Create a custom TF-IDF matrix with category-based weights
     category_weights = np.zeros(X.shape[1])
     for category, keywords in category_keywords.items():
-        category_indices = [vectorizer.vocabulary_[keyword] for keyword in keywords if keyword in vectorizer.vocabulary_]
+        category_indices = [vectorizer.vocabulary_.get(keyword.lower(), -1) for keyword in keywords]
+        category_indices = [idx for idx in category_indices if idx != -1]
         category_weights[category_indices] = 1
 
     X_weighted = X.multiply(category_weights)
