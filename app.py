@@ -77,7 +77,7 @@ def main():
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", list(category_keywords.keys()))
 
-        filtered_data = clustered_data[clustered_data['category'] == category_choice]
+        filtered_data = clustered_data[clustered_data['cluster'] == list(category_keywords.keys()).index(category_choice)]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
