@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
 
 # Define category keywords with variations
 category_keywords = {
@@ -49,7 +48,7 @@ def perform_clustering(data):
     if category_weights.shape[1] != X.shape[1]:
         category_weights = np.pad(category_weights, ((0, 0), (0, X.shape[1] - category_weights.shape[1])), mode='constant')
 
-    X_weighted = X.multiply(category_weights.T)
+    X_weighted = X.multiply(category_weights)
 
     # Perform clustering
     kmeans = KMeans(n_clusters=len(category_keywords), random_state=42)
