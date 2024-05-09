@@ -36,11 +36,11 @@ news_df = fetch_news()
 
 # Streamlit App
 def main():
-    st.title("News Categorization and Clustering App")
-    st.subheader("News Stories from CNN categorized into Business, Politics, Arts/Culture/Celebrities, and Sports")
+    st.title("News Categorization App")
+    st.subheader("News Clustered into Business, Politics, Arts/Culture/Celebrities, and Sports")
 
     # Display categories
-    category_choice = st.sidebar.selectbox("Choose Category", ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
+    category_choice = st.sidebar.selectbox("Choose Category", ['Politics', 'Business', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
     filtered_data = news_df[news_df['category'] == category_choice]
 
     for index, row in filtered_data.iterrows():
