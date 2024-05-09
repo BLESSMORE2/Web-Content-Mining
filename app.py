@@ -29,8 +29,7 @@ def perform_clustering(data):
     X = vectorizer.fit_transform(data['summary'])
 
     # Perform clustering
-    k = min(5, len(data))  # Number of clusters (limit to the number of articles)
-    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans = KMeans(n_clusters=len(categories), random_state=42)
     data['cluster'] = kmeans.fit_predict(X)
 
     return data
@@ -54,12 +53,16 @@ def main():
         }
         news_df = load_data([sources_urls[source] for source in selected_sources])
 
+        # Define categories
+        categories = ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized']
+
         # Perform clustering
         clustered_data = perform_clustering(news_df)
 
         # Display categories
-        category_choice = st.sidebar.selectbox("Choose Category", ['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Cluster 5'])
-        filtered_data = clustered_data[clustered_data['cluster'] == int(category_choice.split()[1]) - 1]
+        category_choice = st.sidebar.selectbox("Choose Category", categories)
+
+        filtered_data = clustered_data[clustered_data['category'] == category_choice]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
