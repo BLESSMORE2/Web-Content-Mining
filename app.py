@@ -23,7 +23,7 @@ def load_data(sources):
     return pd.concat(data, ignore_index=True)
 
 # Perform clustering
-def perform_clustering(data, categories):
+def perform_clustering(data):
     # Vectorize text data
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform(data['summary'])
@@ -57,12 +57,12 @@ def main():
         categories = ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized']
 
         # Perform clustering
-        clustered_data = perform_clustering(news_df, categories)
+        clustered_data = perform_clustering(news_df)
 
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", categories)
 
-        filtered_data = clustered_data[clustered_data['category'] == category_choice]
+        filtered_data = clustered_data[clustered_data['cluster'] == categories.index(category_choice)]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
