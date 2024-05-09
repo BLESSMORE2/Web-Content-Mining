@@ -59,15 +59,17 @@ def main():
         category_choice = st.sidebar.selectbox("Select Category", ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
         filtered_data = news_df[news_df['category'] == category_choice]
 
+        # View CSV
+        if st.sidebar.button("View CSV"):
+            st.subheader("CSV Data")
+            st.write(news_df)
+            
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
             st.write(f"{row['summary']}")
             st.markdown(f"[Read more]({row['link']})")
 
-        # View CSV
-        if st.sidebar.button("View CSV"):
-            st.subheader("CSV Data")
-            st.write(news_df)
+        
     else:
         st.write("Please select at least one news source.")
 
