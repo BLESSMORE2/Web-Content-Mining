@@ -7,10 +7,10 @@ from sklearn.cluster import KMeans
 
 # Define category keywords with variations
 category_keywords = {
-    'Business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
-    'Politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
+    'Business': ['business', 'economy', 'finance', 'price', 'profit', 'sales', 'market', 'trade', 'stocks', 'company'],
+    'Politics': ['politics', 'government', 'war', 'election', 'policy', 'congress', 'president', 'democracy'],
     'Arts/Culture/Celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
-    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
+    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics', 'cricket', 'athlete', 'tournament']
 }
 
 # Fetch and parse the RSS feed for selected news source
@@ -39,18 +39,21 @@ def perform_clustering(data):
 
     # Create a custom TF-IDF matrix with category-based weights
     category_weights = np.zeros(X.shape[1])
+    category_clusters = {}
     for category, keywords in category_keywords.items():
         category_indices = [vectorizer.vocabulary_.get(keyword.lower(), -1) for keyword in keywords]
         category_indices = [idx for idx in category_indices if idx != -1]
         category_weights[category_indices] = 1
-
+        # Store mapping of category to cluster index
+        category_clusters[category] = len(category_clusters)
+    
     X_weighted = X.multiply(category_weights)
 
     # Perform clustering
-    kmeans = KMeans(n_clusters=len(category_keywords), random_state=42)
+    kmeans = KMeans(n_clusters=len(category_clusters), random_state=42)
     data['cluster'] = kmeans.fit_predict(X_weighted)
 
-    return data
+    return data, category_clusters
 
 # Streamlit App
 def main():
@@ -71,13 +74,17 @@ def main():
         }
         news_df = load_data([sources_urls[source] for source in selected_sources])
 
-        # Perform clustering
-        clustered_data = perform_clustering(news_df)
+        # Perform clustering and get category to cluster mapping
+        clustered_data, category_clusters = perform_clustering(news_df)
 
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", list(category_keywords.keys()))
 
-        filtered_data = clustered_data[clustered_data['cluster'] == list(category_keywords.keys()).index(category_choice)]
+        # Get cluster index for the selected category
+        selected_cluster = category_clusters[category_choice]
+
+        # Filter data based on selected cluster
+        filtered_data = clustered_data[clustered_data['cluster'] == selected_cluster]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
