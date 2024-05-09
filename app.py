@@ -43,7 +43,7 @@ def main():
     st.subheader("News Clustered into Business, Politics, Arts/Culture/Celebrities, and Sports")
 
     # Select news sources
-    selected_sources = st.multiselect("Select News Sources", ['BBC', 'New York Times', 'Guardian', 'Washington Post', 'Times of India'])
+    selected_sources = st.multiselect("Select News Sources", ['BBC', 'New York Times', 'CNN', 'Washington Post', 'Times of India'])
 
     # Fetch news data
     if selected_sources:
