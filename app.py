@@ -57,14 +57,14 @@ def main():
         # Perform clustering
         clustered_data = perform_clustering(news_df)
 
-        # Display clusters
-        for cluster_id in clustered_data['cluster'].unique():
-            st.subheader(f"Cluster {cluster_id + 1}")
-            cluster_articles = clustered_data[clustered_data['cluster'] == cluster_id]
-            for index, row in cluster_articles.iterrows():
-                st.write(f"**{row['title']}**")
-                st.write(f"{row['summary']}")
-                st.markdown(f"[Read more]({row['link']})")
+        # Display categories
+        category_choice = st.sidebar.selectbox("Choose Category", ['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Cluster 5'])
+        filtered_data = clustered_data[clustered_data['cluster'] == int(category_choice.split()[1]) - 1]
+
+        for index, row in filtered_data.iterrows():
+            st.write(f"**{row['title']}**")
+            st.write(f"{row['summary']}")
+            st.markdown(f"[Read more]({row['link']})")
     else:
         st.write("Please select at least one news source.")
 
