@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import feedparser
 import pandas as pd
@@ -68,8 +69,9 @@ def main():
 
         # Store data in CSV
         csv_filename = "news_data.csv"
-        news_df.to_csv(csv_filename, index=False)
-        st.sidebar.markdown(f"Download the CSV file [here](/{csv_filename})")
+        csv_path = os.path.join(os.getcwd(), csv_filename)  # Get the absolute path to the CSV file
+        news_df.to_csv(csv_path, index=False)
+        st.sidebar.markdown(f"Download the CSV file [here]({csv_path})")
     else:
         st.write("Please select at least one news source.")
 
