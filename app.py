@@ -7,10 +7,10 @@ from sklearn.cluster import KMeans
 
 # Define category keywords with variations
 category_keywords = {
-    'business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
-    'politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
-    'arts/culture/celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
-    'sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
+    'Business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
+    'Politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
+    'Arts/Culture/Celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
+    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
 }
 
 # Fetch and parse the RSS feed for selected news source
@@ -38,15 +38,11 @@ def perform_clustering(data):
     X = vectorizer.fit_transform(data['summary'])
 
     # Create a custom TF-IDF matrix with category-based weights
-    category_weights = np.zeros((len(category_keywords), X.shape[1]))
-    for i, keywords in enumerate(category_keywords.values()):
-        category_indices = [vectorizer.vocabulary_.get(keyword, -1) for keyword in keywords]
+    category_weights = np.zeros(X.shape[1])
+    for category, keywords in category_keywords.items():
+        category_indices = [vectorizer.vocabulary_.get(keyword.lower(), -1) for keyword in keywords]
         category_indices = [idx for idx in category_indices if idx != -1]
-        category_weights[i, category_indices] = 1
-
-    # Ensure category_weights has the same shape as X
-    if category_weights.shape[1] != X.shape[1]:
-        raise ValueError("Inconsistent shapes between TF-IDF matrix and category weights matrix.")
+        category_weights[category_indices] = 1
 
     X_weighted = X.multiply(category_weights)
 
@@ -55,11 +51,6 @@ def perform_clustering(data):
     data['cluster'] = kmeans.fit_predict(X_weighted)
 
     return data
-
-# Map category choice to cluster containing relevant information
-def map_category_to_cluster(category_choice, category_keywords, clusters, vectorizer):
-    category_idx = list(category_keywords.keys()).index(category_choice)
-    return category_idx
 
 # Streamlit App
 def main():
@@ -86,7 +77,7 @@ def main():
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", list(category_keywords.keys()))
 
-        filtered_data = clustered_data[clustered_data['cluster'] == map_category_to_cluster(category_choice, category_keywords, None, None)]
+        filtered_data = clustered_data[clustered_data['cluster'] == list(category_keywords.keys()).index(category_choice)]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
