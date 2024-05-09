@@ -69,9 +69,9 @@ def main():
 
         # Store data in CSV
         csv_filename = "news_data.csv"
-        csv_path = os.path.join(os.getcwd(), csv_filename)  # Get the absolute path to the CSV file
+        csv_path = os.path.join(os.path.dirname(__file__), csv_filename)
         news_df.to_csv(csv_path, index=False)
-        st.sidebar.markdown(f"Download the CSV file [here]({csv_path})")
+        st.sidebar.markdown(f"Download the CSV file [here]({csv_filename})")
     else:
         st.write("Please select at least one news source.")
 
