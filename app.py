@@ -57,7 +57,7 @@ def main():
         news_df = load_data([sources_urls[source] for source in selected_sources])
 
         # Display categories
-        category_choice = st.sidebar.selectbox("Choose Category", ['Politics', 'Business', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
+        category_choice = st.sidebar.selectbox("Choose Category", ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
         filtered_data = news_df[news_df['category'] == category_choice]
 
         for index, row in filtered_data.iterrows():
