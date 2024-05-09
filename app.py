@@ -1,4 +1,5 @@
 import os
+import tempfile
 import streamlit as st
 import feedparser
 import pandas as pd
@@ -69,8 +70,9 @@ def main():
 
         # Store data in CSV
         csv_filename = "news_data.csv"
-        csv_path = os.path.join(os.getcwd(), csv_filename)
-        news_df.to_csv(csv_path, index=False)
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            csv_path = temp_file.name
+            news_df.to_csv(csv_path, index=False)
 
         if st.sidebar.button("Save data"):
             st.sidebar.markdown(f"Download the CSV file [here]({csv_path})")
