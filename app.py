@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
 
 # Define category keywords with variations
 category_keywords = {
@@ -52,6 +53,13 @@ def perform_clustering(data):
 
     return data
 
+# Map category choice to cluster containing relevant information
+def map_category_to_cluster(category_choice, category_keywords, clusters, vectorizer):
+    category_vector = vectorizer.transform([category_keywords[category_choice]])
+    similarity_scores = cosine_similarity(clusters, category_vector)
+    most_similar_cluster_idx = np.argmax(similarity_scores)
+    return most_similar_cluster_idx
+
 # Streamlit App
 def main():
     st.title("News Categorization App")
@@ -74,10 +82,16 @@ def main():
         # Perform clustering
         clustered_data = perform_clustering(news_df)
 
+        # Calculate TF-IDF matrix for categories
+        vectorizer = TfidfVectorizer(stop_words='english', lowercase=True)
+        category_texts = list(category_keywords.values())
+        category_vectors = vectorizer.fit_transform([' '.join(words) for words in category_texts])
+
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", list(category_keywords.keys()))
 
-        filtered_data = clustered_data[clustered_data['cluster'] == list(category_keywords.keys()).index(category_choice)]
+        most_similar_cluster_idx = map_category_to_cluster(category_choice, category_keywords, category_vectors, vectorizer)
+        filtered_data = clustered_data[clustered_data['cluster'] == most_similar_cluster_idx]
 
         for index, row in filtered_data.iterrows():
             st.write(f"**{row['title']}**")
