@@ -1,4 +1,3 @@
-
 import streamlit as st
 import feedparser
 import pandas as pd
@@ -40,7 +39,7 @@ def load_data(sources):
 
 # Streamlit App
 def main():
-    st.title("News Categorization App")
+    st.title("News Categorization and Clustering App")
     st.subheader("News Clustered into Business, Politics, Arts/Culture/Celebrities, and Sports")
 
     # Select news sources
@@ -56,6 +55,11 @@ def main():
             'Times of India': 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms'
         }
         news_df = load_data([sources_urls[source] for source in selected_sources])
+
+        # Store data in CSV
+        csv_filename = "news_data.csv"
+        news_df.to_csv(csv_filename, index=False)
+        st.markdown(f"Download the CSV file [here](/{csv_filename})")
 
         # Display categories
         category_choice = st.sidebar.selectbox("Choose Category", ['Business', 'Politics', 'Arts/Culture/Celebrities', 'Sports', 'Uncategorized'])
