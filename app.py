@@ -8,10 +8,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # Define category keywords with variations
 category_keywords = {
-    'Business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
-    'Politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
-    'Arts/Culture/Celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
-    'Sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
+    'business': ['business', 'economy', 'finance','price','profit','sales', 'market', 'trade', 'stocks', 'company'],
+    'politics': ['politics', 'government', 'war','election', 'policy', 'congress', 'president', 'democracy'],
+    'arts/culture/celebrities': ['art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
+    'sports': ['sports', 'football', 'soccer', 'basketball', 'tennis', 'athletics','cricket', 'athlete', 'tournament']
 }
 
 # Fetch and parse the RSS feed for selected news source
@@ -41,7 +41,7 @@ def perform_clustering(data):
     # Create a custom TF-IDF matrix with category-based weights
     category_weights = np.zeros(X.shape[1])
     for category, keywords in category_keywords.items():
-        category_indices = [vectorizer.vocabulary_.get(keyword.lower(), -1) for keyword in keywords]
+        category_indices = [vectorizer.vocabulary_.get(keyword, -1) for keyword in keywords]
         category_indices = [idx for idx in category_indices if idx != -1]
         category_weights[category_indices] = 1
 
