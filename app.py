@@ -50,7 +50,7 @@ def main():
         sources_urls = {
             'BBC': 'http://feeds.bbci.co.uk/news/rss.xml',
             'New York Times': 'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
-            'Guardian': 'https://www.theguardian.com/world/rss',
+            'CNN': 'http://rss.cnn.com/rss/cnn_topstories.rss',
             'Washington Post': 'https://www.washingtonpost.com/rss-national.xml',
             'Times of India': 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms'
         }
