@@ -20,10 +20,10 @@ def fetch_news(source_url):
 # Classify news based on keywords
 def classify_news(title, summary):
     keywords = {
-        'Business': ['economy', 'business', 'stocks', 'market', 'trade'],
-        'Politics': ['politics', 'election', 'senate', 'congress', 'law'],
-        'Arts/Culture/Celebrities': ['art', 'movie', 'celebrity', 'theatre', 'culture'],
-        'Sports': ['sports', 'game', 'tournament', 'match', 'Olympics']
+        'Business':  ['business', 'economy', 'finance', 'price','loss', 'profit', 'sales', 'market', 'trade', 'stocks', 'company','shares'],
+        'Politics': ['politics', 'election','senate', 'congress', 'law', , 'government', 'war', 'election', 'policy', 'congress', 'president', 'democracy'],
+        'Arts/Culture/Celebrities': ['art', 'movie', 'celebrity', 'theatre', 'culture','art', 'culture', 'entertainment', 'celebrity', 'music', 'film', 'artist', 'festival'],
+        'Sports': ['sports', 'game',, 'match', 'Olympics', 'football', 'soccer', 'basketball', 'tennis', 'athletics', 'cricket', 'athlete', 'tournament']
     }
     text = title.lower() + ' ' + summary.lower()
     for category, words in keywords.items():
