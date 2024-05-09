@@ -44,10 +44,6 @@ def perform_clustering(data):
         category_indices = [idx for idx in category_indices if idx != -1]
         category_weights[i, category_indices] = 1
 
-    # Ensure category_weights has the same shape as X
-    if category_weights.shape[1] != X.shape[1]:
-        category_weights = np.pad(category_weights, ((0, 0), (0, X.shape[1] - category_weights.shape[1])), mode='constant')
-
     X_weighted = X.multiply(category_weights)
 
     # Perform clustering
