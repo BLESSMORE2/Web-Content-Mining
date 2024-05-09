@@ -71,9 +71,9 @@ def main():
         csv_filename = "news_data.csv"
         csv_path = os.path.join(os.path.dirname(__file__), csv_filename)
         news_df.to_csv(csv_path, index=False)
-        st.sidebar.markdown("<br>", unsafe_allow_html=True)  # Add spacing
-        st.sidebar.markdown(f"**Save data:**")
-        st.sidebar.markdown(f"Download the CSV file [here]({csv_filename})")
+
+        if st.sidebar.button("Save data"):
+            st.sidebar.markdown(f"Download the CSV file [here]({csv_filename})")
     else:
         st.write("Please select at least one news source.")
 
